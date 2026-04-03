@@ -5,7 +5,8 @@ import os
 from datetime import datetime
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your-secret-key-here'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key-here')
+app.config['DEBUG'] = os.environ.get('DEBUG', 'False').lower() == 'true'
 
 # Initialize extensions
 CORS(app)
