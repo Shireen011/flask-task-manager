@@ -1,7 +1,7 @@
 // Mobile Task Manager Application
 class MobileTaskManager {
     constructor() {
-        this.apiUrl = 'http://192.168.1.7:5000/api/tasks'; // Your local Flask server
+        this.apiUrl = 'https://task-manager-r6tz.onrender.com/api/tasks'; 
         this.tasks = [];
         this.isOnline = navigator.onLine;
         this.init();
