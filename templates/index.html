@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Task Manager{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="jumbotron bg-light p-5 rounded">
+            <h1 class="display-4">Welcome to Task Manager</h1>
+            <p class="lead">A simple and efficient way to manage your tasks and stay organized.</p>
+            <hr class="my-4">
+            <p>Get started by creating and managing your tasks. Keep track of what needs to be done and mark items as complete when finished.</p>
+            <a class="btn btn-primary btn-lg" href="{{ url_for('tasks_page') }}" role="button">Manage Tasks</a>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Create Tasks</h5>
+                        <p class="card-text">Add new tasks with titles and descriptions to keep track of your work.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Mark Complete</h5>
+                        <p class="card-text">Check off tasks as you complete them and see your progress.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Stay Organized</h5>
+                        <p class="card-text">Edit or delete tasks to keep your task list clean and current.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

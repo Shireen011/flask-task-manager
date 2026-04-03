@@ -1,0 +1,37 @@
+{
+  "name": "task-manager-mobile",
+  "displayName": "Task Manager Mobile",
+  "version": "1.0.0",
+  "description": "Mobile version of Task Manager app",
+  "main": "index.js",
+  "scripts": {
+    "build": "cordova build android",
+    "build-release": "cordova build android --release",
+    "run-android": "cordova run android",
+    "emulate-android": "cordova emulate android",
+    "prepare": "cordova prepare",
+    "serve": "cordova serve"
+  },
+  "dependencies": {
+    "cordova": "^12.0.0",
+    "cordova-android": "^12.0.0"
+  },
+  "cordova": {
+    "platforms": [
+      "android"
+    ],
+    "plugins": {
+      "cordova-plugin-whitelist": {},
+      "cordova-plugin-network-information": {},
+      "cordova-plugin-device": {},
+      "cordova-plugin-splashscreen": {}
+    }
+  },
+  "keywords": [
+    "ecosystem:cordova",
+    "task-manager",
+    "mobile"
+  ],
+  "author": "Task Manager Team",
+  "license": "MIT"
+}
