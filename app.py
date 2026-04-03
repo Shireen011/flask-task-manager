@@ -42,6 +42,11 @@ def tasks_page():
     """Task management page route."""
     return render_template('tasks.html')
 
+@app.route('/debug')
+def debug_page():
+    """Debug page for testing API."""
+    return render_template('debug.html')
+
 @app.route('/manifest.json')
 def manifest():
     """Serve PWA manifest."""
