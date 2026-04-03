@@ -11,30 +11,31 @@ app.config['DEBUG'] = os.environ.get('DEBUG', 'False').lower() == 'true'
 # Initialize extensions
 CORS(app)
 
-# Simple file-based data storage
-DATA_FILE = 'tasks.json'
+# Simple in-memory data storage (resets on deployment)
+# For production, you'd want to use a database like PostgreSQL
+TASKS_DATA = []
+NEXT_ID = 1
 
 def load_tasks():
-    """Load tasks from JSON file."""
-    if os.path.exists(DATA_FILE):
-        try:
-            with open(DATA_FILE, 'r') as f:
-                return json.load(f)
-        except (json.JSONDecodeError, IOError):
-            # If file is corrupted or can't be read, start fresh
-            return []
-    return []
+    """Load tasks from memory."""
+    return TASKS_DATA
 
 def save_tasks(tasks):
-    """Save tasks to JSON file."""
-    with open(DATA_FILE, 'w') as f:
-        json.dump(tasks, f, indent=2)
+    """Save tasks to memory."""
+    global TASKS_DATA
+    TASKS_DATA = tasks
 
 def get_next_id(tasks):
     """Get next available ID."""
+    global NEXT_ID
     if not tasks:
+        NEXT_ID = 1
         return 1
-    return max(task['id'] for task in tasks) + 1
+    
+    # Find the highest ID and increment
+    max_id = max(task['id'] for task in tasks) if tasks else 0
+    NEXT_ID = max_id + 1
+    return NEXT_ID
 
 @app.route('/')
 def index():
@@ -147,6 +148,18 @@ def delete_task(task_id):
     save_tasks(tasks)
     
     return jsonify({'message': 'Task deleted successfully'}), 200
+
+# Admin/Debug Routes
+@app.route('/api/reset', methods=['POST'])
+def reset_data():
+    """Reset all task data - for admin use."""
+    global TASKS_DATA, NEXT_ID
+    try:
+        TASKS_DATA = []
+        NEXT_ID = 1
+        return jsonify({'message': 'Data reset successfully'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.errorhandler(404)
 def not_found(error):

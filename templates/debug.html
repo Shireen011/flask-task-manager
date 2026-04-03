@@ -7,6 +7,7 @@
     <h1>API Debug Test</h1>
     <button onclick="testAPI()">Test Add Task</button>
     <button onclick="loadTasks()">Load Tasks</button>
+    <button onclick="resetData()" style="background-color: red; color: white;">Reset All Data</button>
     <div id="result"></div>
     
     <script>
@@ -37,6 +38,20 @@
             document.getElementById('result').innerHTML = 'Tasks: ' + JSON.stringify(tasks, null, 2);
         } catch (error) {
             document.getElementById('result').innerHTML = 'Error: ' + error.message;
+        }
+    }
+    
+    async function resetData() {
+        if (confirm('Are you sure you want to delete ALL tasks?')) {
+            try {
+                const response = await fetch('/api/reset', {
+                    method: 'POST'
+                });
+                const result = await response.json();
+                document.getElementById('result').innerHTML = 'Reset: ' + JSON.stringify(result);
+            } catch (error) {
+                document.getElementById('result').innerHTML = 'Reset Error: ' + error.message;
+            }
         }
     }
     </script>
