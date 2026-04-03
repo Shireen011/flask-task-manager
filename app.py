@@ -11,6 +11,15 @@ app.config['DEBUG'] = os.environ.get('DEBUG', 'False').lower() == 'true'
 # Initialize extensions
 CORS(app)
 
+# Add cache control headers to prevent caching issues
+@app.after_request
+def after_request(response):
+    # Disable caching for API and HTML responses
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    return response
+
 # Simple in-memory data storage (resets on deployment)
 # For production, you'd want to use a database like PostgreSQL
 TASKS_DATA = []
