@@ -61,6 +61,14 @@ def debug_page():
     """Debug page for testing API."""
     return render_template('debug.html')
 
+@app.route('/favicon.ico')
+def favicon():
+    """Serve favicon as SVG with proper headers."""
+    response = app.send_static_file('favicon.svg')
+    response.headers['Content-Type'] = 'image/svg+xml'
+    response.headers['Cache-Control'] = 'public, max-age=86400'  # Cache for 1 day
+    return response
+
 @app.route('/manifest.json')
 def manifest():
     """Serve PWA manifest."""

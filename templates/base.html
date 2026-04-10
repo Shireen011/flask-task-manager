@@ -5,9 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Task Manager{% endblock %}</title>
     
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='icons/favicon.svg') }}">
-    <link rel="alternate icon" href="{{ url_for('static', filename='icons/icon-192x192.png') }}">
+    <!-- Favicon (multiple formats for best compatibility) -->
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}?v=20260410">
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='icons/favicon.svg') }}?v=20260410">
+    <link rel="shortcut icon" href="/favicon.ico?v=20260410">
+    <link rel="alternate icon" href="{{ url_for('static', filename='icons/icon-192x192.png') }}?v=20260410">
     
     <!-- PWA Meta Tags -->
     <meta name="mobile-web-app-capable" content="yes">
