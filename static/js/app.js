@@ -56,6 +56,7 @@ function installPWA() {
 class TaskManager {
     constructor() {
         this.apiUrl = '/api/tasks';
+        this.isSubmitting = false; // Prevent double submissions
         this.init();
     }
 
@@ -73,7 +74,10 @@ class TaskManager {
         // Add task form
         const taskForm = document.getElementById('task-form');
         if (taskForm) {
-            taskForm.addEventListener('submit', (e) => this.handleAddTask(e));
+            // Remove existing listeners to prevent duplicates
+            taskForm.removeEventListener('submit', this.boundAddTask);
+            this.boundAddTask = (e) => this.handleAddTask(e);
+            taskForm.addEventListener('submit', this.boundAddTask);
         }
 
         // Edit task form
@@ -81,7 +85,10 @@ class TaskManager {
         if (editForm) {
             const saveBtn = document.getElementById('save-task-changes');
             if (saveBtn) {
-                saveBtn.addEventListener('click', () => this.handleUpdateTask());
+                // Remove existing listeners to prevent duplicates
+                saveBtn.removeEventListener('click', this.boundUpdateTask);
+                this.boundUpdateTask = () => this.handleUpdateTask();
+                saveBtn.addEventListener('click', this.boundUpdateTask);
             }
         }
 
@@ -167,12 +174,25 @@ class TaskManager {
     async handleAddTask(e) {
         e.preventDefault();
         
+        // Prevent double submission using class flag
+        if (this.isSubmitting) {
+            return;
+        }
+        
         const title = document.getElementById('taskTitle').value.trim();
         const description = document.getElementById('taskDescription').value.trim();
         
         if (!title) {
             this.showError('Task title is required.');
             return;
+        }
+
+        // Set submitting flag and disable button
+        this.isSubmitting = true;
+        const submitButton = document.querySelector('#task-form button[type="submit"]');
+        if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.innerHTML = 'Adding...';
         }
 
         try {
@@ -195,6 +215,13 @@ class TaskManager {
         } catch (error) {
             console.error('Error adding task:', error);
             this.showError('Failed to add task. Please try again.');
+        } finally {
+            // Reset submitting flag and re-enable button
+            this.isSubmitting = false;
+            if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.innerHTML = 'Add Task';
+            }
         }
     }
 
@@ -239,6 +266,11 @@ class TaskManager {
     }
 
     async handleUpdateTask() {
+        // Prevent double submission
+        if (this.isSubmitting) {
+            return;
+        }
+        
         const taskId = document.getElementById('editTaskId').value;
         const title = document.getElementById('editTaskTitle').value.trim();
         const description = document.getElementById('editTaskDescription').value.trim();
@@ -247,6 +279,14 @@ class TaskManager {
         if (!title) {
             this.showError('Task title is required.');
             return;
+        }
+
+        // Set submitting flag and disable button
+        this.isSubmitting = true;
+        const saveButton = document.getElementById('save-task-changes');
+        if (saveButton) {
+            saveButton.disabled = true;
+            saveButton.innerHTML = 'Saving...';
         }
 
         try {
@@ -270,6 +310,13 @@ class TaskManager {
         } catch (error) {
             console.error('Error updating task:', error);
             this.showError('Failed to update task. Please try again.');
+        } finally {
+            // Reset submitting flag and re-enable button
+            this.isSubmitting = false;
+            if (saveButton) {
+                saveButton.disabled = false;
+                saveButton.innerHTML = 'Save Changes';
+            }
         }
     }
 
