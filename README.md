@@ -1,6 +1,8 @@
 # Flask Task Manager Backend
 
-A Python Flask web application that serves as a backend API for a task management system.
+A Python Flask web application that serves as a backend API for a task management system with enhanced romantic greetings and modern UI.
+
+<!-- Deployment trigger: Updated April 11, 2026 with midnight greetings and text buttons -->
 
 ## Features
 
