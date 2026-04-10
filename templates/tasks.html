@@ -1,56 +1,401 @@
-{% extends "base.html" %}
-
-{% block title %}Tasks - Task Manager{% endblock %}
-
-{% block content %}
-<div class="row">
-    <div class="col-md-10 mx-auto">
-        <h2>Task Management</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Task Manager</title>
+    
+    <!-- Professional Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Favicon (multiple formats for best compatibility) -->
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}?v=20260411-welcome">
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='icons/favicon.svg') }}?v=20260411-welcome">
+    <link rel="shortcut icon" href="/favicon.ico?v=20260411-welcome">
+    <link rel="alternate icon" href="{{ url_for('static', filename='icons/icon-192x192.png') }}?v=20260411-welcome">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="TaskManager">
+    <meta name="theme-color" content="#2563eb">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/icon-192x192.png') }}">
+    <link rel="icon" type="image/png" sizes="192x192" href="{{ url_for('static', filename='icons/icon-192x192.png') }}">
+    <link rel="icon" type="image/png" sizes="512x512" href="{{ url_for('static', filename='icons/icon-512x512.png') }}">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Inline CSS -->
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+        }
         
-        <!-- Add Task Form -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5>Add New Task</h5>
-            </div>
-            <div class="card-body">
-                <form id="task-form">
-                    <div class="mb-3">
-                        <label for="taskTitle" class="form-label">Task Title*</label>
-                        <input type="text" class="form-control" id="taskTitle" required>
+        .simple-header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 0;
+        }
+        
+        .app-title {
+            color: #2563eb;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin: 0;
+            text-align: center;
+        }
+        
+        .task-container {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .task-item {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .task-item:hover {
+            border-color: #ff6b6b;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.15);
+            transform: translateY(-1px);
+        }
+        
+        .task-content {
+            flex: 1;
+            min-width: 0; /* Allows text to wrap properly */
+        }
+        
+        .task-title {
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0 0 0.5rem 0;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+        
+        .task-description {
+            color: #64748b;
+            font-size: 0.875rem;
+            margin: 0;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+        
+        .task-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-left: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .completed .task-title {
+            text-decoration: line-through;
+            color: #64748b;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: #64748b;
+        }
+        
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Welcome Screen Styles */
+        .welcome-screen {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+        
+        .welcome-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 1rem;
+            padding: 3rem 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+        
+        .welcome-hero::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 70%, transparent 100%);
+            border-radius: 50%;
+            transform: translate(30%, -30%);
+        }
+        
+        .welcome-hero::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(-50%, 50%);
+        }
+        
+        .welcome-hero h1 {
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        
+        .welcome-hero .lead {
+            font-size: 1.125rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .feature-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .feature-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.2s;
+            position: relative;
+        }
+        
+        .feature-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 0.75rem 0.75rem 0 0;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+        }
+        
+        .feature-card h5 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1e293b;
+        }
+        
+        .feature-card p {
+            color: #64748b;
+            line-height: 1.6;
+        }
+        
+        /* Hidden states */
+        .d-none { display: none !important; }
+        
+        @media (max-width: 768px) {
+            .task-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .task-item {
+                padding: 1rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .task-content {
+                width: 100%;
+            }
+            
+            .task-actions {
+                width: 100%;
+                justify-content: flex-end;
+                margin-left: 0;
+                gap: 0.75rem;
+            }
+            
+            .task-actions .btn {
+                flex: 0 0 auto;
+                min-width: 80px;
+            }
+            
+            .welcome-hero {
+                padding: 2rem 1.5rem;
+            }
+            
+            .welcome-hero h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Simple Header -->
+    <header class="simple-header">
+        <div class="container">
+            <h1 class="app-title">📋 TaskManager</h1>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container py-4">
+        <!-- Welcome Screen (shown when no tasks) -->
+        <div id="welcome-screen" class="welcome-screen">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="welcome-hero">
+                        <h1 class="display-4">TaskManager</h1>
+                        <p class="lead">A simple and efficient way to manage your tasks and stay organized.</p>
+                        <hr style="border-color: rgba(255,255,255,0.3); margin: 2rem 0;">
+                        <button type="button" class="btn btn-light btn-lg" data-bs-toggle="modal" data-bs-target="#addTaskModal">
+                            <span style="margin-right: 0.5rem;">🚀</span>
+                            Create Your First Task
+                        </button>
                     </div>
-                    <div class="mb-3">
-                        <label for="taskDescription" class="form-label">Description</label>
-                        <textarea class="form-control" id="taskDescription" rows="3"></textarea>
+
+                    <div class="feature-cards">
+                        <div class="feature-card">
+                            <h5>✅ Create Tasks</h5>
+                            <p>Add new tasks with titles and descriptions to keep track of your work efficiently.</p>
+                        </div>
+                        <div class="feature-card">
+                            <h5>🎯 Mark Complete</h5>
+                            <p>Check off tasks as you complete them and track your progress throughout the day.</p>
+                        </div>
+                        <div class="feature-card">
+                            <h5>📋 Stay Organized</h5>
+                            <p>Edit or delete tasks to keep your task list clean, current, and well-organized.</p>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Add Task</button>
-                </form>
+                </div>
             </div>
         </div>
 
-        <!-- Tasks List -->
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5>Tasks</h5>
-                <button id="refresh-tasks" class="btn btn-outline-secondary btn-sm">Refresh</button>
-            </div>
-            <div class="card-body">
-                <div id="loading" class="text-center d-none">
-                    <div class="spinner-border" role="status">
-                        <span class="visually-hidden">Loading...</span>
+        <!-- Task Management Interface (shown when tasks exist) -->
+        <div id="task-management" class="d-none">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <!-- Simple Task Management Interface -->
+                    <div class="task-container">
+                        <div class="task-header">
+                            <h2>My Tasks</h2>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTaskModal">
+                                + Add Task
+                            </button>
+                        </div>
+
+                        <!-- Loading State -->
+                        <div id="loading" class="d-none text-center py-3">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading tasks...</span>
+                            </div>
+                        </div>
+
+                        <!-- Task List -->
+                        <div id="tasks-container">
+                            <!-- Tasks will be populated here by JavaScript -->
+                        </div>
                     </div>
                 </div>
-                <div id="no-tasks" class="text-center text-muted d-none">
-                    <p>No tasks found. Create your first task above!</p>
-                </div>
-                <div id="tasks-container">
-                    <!-- Tasks will be loaded here -->
-                </div>
             </div>
+        </div>
+
+<!-- Simplified Add Task Modal -->
+<div class="modal fade" id="addTaskModal" tabindex="-1" aria-labelledby="addTaskModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addTaskModalLabel">Add New Task</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="task-form">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="taskTitle" class="form-label">Task Title *</label>
+                        <input type="text" class="form-control" id="taskTitle" name="title" required placeholder="What needs to be done?">
+                    </div>
+                    <div class="mb-3">
+                        <label for="taskDescription" class="form-label">Description (Optional)</label>
+                        <textarea class="form-control" id="taskDescription" name="description" rows="2" placeholder="Add details..."></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="taskPriority" class="form-label">Priority</label>
+                        <select class="form-select" id="taskPriority" name="priority">
+                            <option value="low">🟢 Low</option>
+                            <option value="medium" selected>🟡 Medium</option>
+                            <option value="high">🔴 High</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        Add Task
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
-<!-- Edit Task Modal -->
+<!-- Simplified Edit Task Modal -->
 <div class="modal fade" id="editTaskModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -62,26 +407,73 @@
                 <form id="edit-task-form">
                     <input type="hidden" id="editTaskId">
                     <div class="mb-3">
-                        <label for="editTaskTitle" class="form-label">Task Title*</label>
+                        <label for="editTaskTitle" class="form-label">Task Title *</label>
                         <input type="text" class="form-control" id="editTaskTitle" required>
                     </div>
                     <div class="mb-3">
                         <label for="editTaskDescription" class="form-label">Description</label>
-                        <textarea class="form-control" id="editTaskDescription" rows="3"></textarea>
+                        <textarea class="form-control" id="editTaskDescription" rows="2"></textarea>
                     </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="editTaskCompleted">
-                        <label class="form-check-label" for="editTaskCompleted">
-                            Mark as completed
-                        </label>
+                    <div class="mb-3">
+                        <label for="editTaskPriority" class="form-label">Priority</label>
+                        <select class="form-select" id="editTaskPriority">
+                            <option value="low">🟢 Low</option>
+                            <option value="medium">🟡 Medium</option>
+                            <option value="high">🔴 High</option>
+                        </select>
+                    </div>
+                    <div class="mt-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="editTaskCompleted">
+                            <label class="form-check-label" for="editTaskCompleted">
+                                Mark as completed
+                            </label>
+                        </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="save-task-changes">Save Changes</button>
+                <button type="button" class="btn btn-primary" id="save-task-changes">
+                    Save Changes
+                </button>
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
+
+    </main>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Task Manager JS -->
+    <script src="{{ url_for('static', filename='js/app.js') }}?v=20260411-textbtn"></script>
+    
+    <script>
+        // Force clear all caches and refresh
+        if ('caches' in window) {
+            caches.keys().then(function(names) {
+                for (let name of names) {
+                    caches.delete(name);
+                }
+            });
+        }
+        
+        // Force reload if old version detected
+        if (localStorage.getItem('app_version') !== '20260411-textbtn') {
+            localStorage.setItem('app_version', '20260411-textbtn');
+            console.log('New version detected, forcing reload...');
+            setTimeout(() => window.location.reload(true), 100);
+        }
+        
+        // Initialize TaskManager when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!window.taskManager) {
+                console.log('Initializing TaskManager...');
+                window.taskManager = new TaskManager();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -266,6 +266,30 @@ body {
     padding: 1.5rem;
 }
 
+/* Ensure all form fields are visible */
+.modal-body .row {
+    display: flex !important;
+    flex-wrap: wrap;
+}
+
+.modal-body .col-6 {
+    flex: 0 0 50%;
+    max-width: 50%;
+    padding-right: 0.75rem;
+    padding-left: 0.75rem;
+}
+
+.form-select, .form-control {
+    display: block !important;
+    width: 100% !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    border: 1px solid var(--border-color) !important;
+    background-color: white !important;
+    padding: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+}
+
 /* Professional Alerts */
 .alert {
     border: none;
@@ -335,6 +359,13 @@ body {
     .task-meta {
         flex-direction: column;
         gap: 0.5rem;
+    }
+    
+    /* Mobile modal form fixes */
+    .modal-body .col-6 {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+        margin-bottom: 1rem;
     }
 }
 

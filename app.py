@@ -1,7 +1,8 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, redirect, url_for
 from flask_cors import CORS
 import json
 import os
+import random
 from datetime import datetime
 
 app = Flask(__name__)
@@ -10,6 +11,75 @@ app.config['DEBUG'] = os.environ.get('DEBUG', 'False').lower() == 'true'
 
 # Initialize extensions
 CORS(app)
+
+# Greeting messages for different times and moods
+GREETINGS = {
+    "morning": [
+        "Good morning, my sunshine ☀️",
+        "Rise and shine, handsome 💛",
+        "Another day, another reason I love you",
+        "Hope your day starts with a smile 😊",
+        "Good morning to the love of my life ❤️"
+    ],
+    "afternoon": [
+        "You mean everything to me 💕",
+        "Loving you is my favorite thing",
+        "You make my world complete 🌍",
+        "Just thinking about you makes me smile 😊",
+        "Forever grateful for you ❤️"
+    ],
+    "encouraging": [
+        "You've got this! 💪",
+        "Go conquer the day, champ 🚀",
+        "I believe in you, always 💖",
+        "You are stronger than you think",
+        "Today is yours — make it amazing ✨"
+    ],
+    "playful": [
+        "Hey cutie 😘",
+        "Smile! Someone loves you 😄",
+        "You + Me = ❤️",
+        "Warning: You're too adorable 😍",
+        "Just a daily dose of love 💌"
+    ],
+    "evening": [
+        "Hope your day was beautiful 💫",
+        "Missing you a little extra today ❤️",
+        "Counting days until I can see you again 🌙",
+        "Nights feel incomplete without you here",
+        "You're my favorite person always 💖",
+        "Ending the day thinking of you 🌙"
+    ],
+    "midnight": [
+        "I'm thinking of you even when the world is asleep ❤️",
+        "It's midnight… and you're still on my mind ❤️",
+        "The world is asleep, but my heart is awake thinking of you 🌙",
+        "Even at midnight, you're my favorite thought 💖",
+        "Somewhere between today and tomorrow… I choose you again ❤️",
+        "If you were here, this night would be perfect 🌙",
+        "Sending you a silent hug across miles 🤗",
+        "Midnight thoughts = you ❤️",
+        "You're my last thought today and my first tomorrow 💖",
+        "I wish this silence had you in it"
+    ]
+}
+
+def get_greeting():
+    """Get time-appropriate greeting message."""
+    hour = datetime.now().hour
+
+    if hour >= 0 and hour < 3:  # Midnight to 3 AM
+        pool = GREETINGS["midnight"]
+    elif hour < 12:
+        pool = GREETINGS["morning"]
+    elif hour < 17:
+        pool = GREETINGS["afternoon"] + GREETINGS["encouraging"]
+    elif hour < 21:
+        pool = GREETINGS["playful"] + GREETINGS["encouraging"]
+    else:
+        pool = GREETINGS["evening"]
+
+    return random.choice(pool)
 
 # Add cache control headers to prevent caching issues
 @app.after_request
@@ -48,8 +118,8 @@ def get_next_id(tasks):
 
 @app.route('/')
 def index():
-    """Home page route."""
-    return render_template('index.html')
+    """Redirect directly to tasks - no unnecessary home page."""
+    return redirect(url_for('tasks_page'))
 
 @app.route('/tasks')
 def tasks_page():

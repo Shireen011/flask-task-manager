@@ -137,10 +137,13 @@ class TaskManager {
         const modalHtml = `
             <div class="modal fade" id="greetingModal" tabindex="-1" aria-labelledby="greetingModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content" style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 25%, #fecfef 75%, #fad0c4 100%); color: white; border: none;">
+                    <div class="modal-content" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none;">
                         <div class="modal-body text-center p-5">
                             <div style="font-size: 4rem; margin-bottom: 1rem;">${randomEmoji}</div>
                             <h4 class="mb-3" style="font-weight: 300;">${message}</h4>
+                            <button type="button" class="btn btn-light btn-lg" data-bs-dismiss="modal" style="border-radius: 25px; padding: 0.75rem 2rem;">
+                                Thank you ❤️
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -159,11 +162,6 @@ class TaskManager {
         // Show modal
         const modal = new bootstrap.Modal(document.getElementById('greetingModal'));
         modal.show();
-        
-        // Auto-close after 4 seconds
-        setTimeout(() => {
-            modal.hide();
-        }, 4000);
         
         // Clean up after modal is hidden
         document.getElementById('greetingModal').addEventListener('hidden.bs.modal', function () {
@@ -291,17 +289,17 @@ class TaskManager {
                     <button class="btn btn-sm ${task.completed ? 'btn-warning' : 'btn-success'}" 
                             onclick="window.taskManagerInstance.toggleComplete(${task.id}, ${!task.completed})"
                             title="${task.completed ? 'Mark as pending' : 'Mark as complete'}">
-                        ${task.completed ? 'Undo' : 'Done'}
+                        ${task.completed ? '↩️' : '✅'}
                     </button>
                     <button class="btn btn-sm btn-outline-primary" 
                             onclick="window.taskManagerInstance.openEditModal(${task.id})"
                             title="Edit task">
-                        Edit
+                        ✏️
                     </button>
                     <button class="btn btn-sm btn-outline-danger" 
                             onclick="window.taskManagerInstance.confirmDelete(${task.id})"
                             title="Delete task">
-                        Delete
+                        🗑️
                     </button>
                 </div>
             </div>
