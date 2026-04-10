@@ -68,10 +68,13 @@ def manifest():
 
 @app.route('/sw.js')
 def service_worker():
-    """Serve service worker."""
+    """Serve service worker with no-cache headers."""
     response = app.send_static_file('sw.js')
     response.headers['Content-Type'] = 'application/javascript'
     response.headers['Service-Worker-Allowed'] = '/'
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
     return response
 
 # API Routes
