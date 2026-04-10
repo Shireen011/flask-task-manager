@@ -308,6 +308,10 @@
                             <span style="margin-right: 0.5rem;">🚀</span>
                             Create Your First Task
                         </button>
+                        <button type="button" class="btn btn-outline-light btn-lg ms-3" onclick="showInstallPrompt()" id="manual-install-btn">
+                            <span style="margin-right: 0.5rem;">📱</span>
+                            Install as App
+                        </button>
                     </div>
 
                     <div class="feature-cards">
@@ -448,7 +452,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     
     <!-- Task Manager JS -->
-    <script src="{{ url_for('static', filename='js/app.js') }}?v=20260411-textbtn"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}?v=20260411-pwa"></script>
     
     <script>
         // Force clear all caches and refresh
@@ -461,8 +465,8 @@
         }
         
         // Force reload if old version detected
-        if (localStorage.getItem('app_version') !== '20260411-textbtn') {
-            localStorage.setItem('app_version', '20260411-textbtn');
+        if (localStorage.getItem('app_version') !== '20260411-pwa') {
+            localStorage.setItem('app_version', '20260411-pwa');
             console.log('New version detected, forcing reload...');
             setTimeout(() => window.location.reload(true), 100);
         }

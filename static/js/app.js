@@ -1,5 +1,76 @@
 // Task Manager Frontend JavaScript with Enhanced Greeting System
 
+// PWA Installation Setup
+let deferredPrompt;
+let installButton;
+
+// PWA Install Prompt Handler
+window.addEventListener('beforeinstallprompt', (e) => {
+    console.log('PWA install prompt triggered');
+    e.preventDefault();
+    deferredPrompt = e;
+    showInstallButton();
+});
+
+function showInstallButton() {
+    // Create install button if it doesn't exist
+    if (!document.getElementById('install-app')) {
+        const installBtn = document.createElement('button');
+        installBtn.id = 'install-app';
+        installBtn.className = 'btn btn-success position-fixed';
+        installBtn.innerHTML = '📱 Install App';
+        installBtn.style.cssText = `
+            bottom: 20px;
+            right: 20px;
+            z-index: 1050;
+            border-radius: 25px;
+            padding: 0.75rem 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            font-weight: 600;
+        `;
+        installBtn.onclick = installPWA;
+        document.body.appendChild(installBtn);
+        installButton = installBtn;
+        console.log('Install button added to page');
+    }
+}
+
+function installPWA() {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+                console.log('User accepted the install prompt');
+                if (installButton) {
+                    installButton.remove();
+                }
+            }
+            deferredPrompt = null;
+        });
+    }
+}
+
+// Manual install prompt function
+function showInstallPrompt() {
+    if (deferredPrompt) {
+        installPWA();
+    } else {
+        // Show instructions for manual installation
+        alert(`To install this app on your device:
+
+📱 On Mobile:
+• Android: Tap browser menu → "Add to Home screen"
+• iPhone: Tap Share button → "Add to Home Screen"
+
+💻 On Desktop:
+• Chrome: Click address bar install icon or menu → "Install TaskManager"
+• Edge: Click address bar install icon or menu → "Apps" → "Install this site as an app"`);
+    }
+}
+
+// Make function globally available
+window.showInstallPrompt = showInstallPrompt;
+
 class TaskManager {
     constructor() {
         // Prevent multiple instances
