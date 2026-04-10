@@ -100,11 +100,13 @@ class TaskManager {
     }
 
     async loadTasks() {
+        console.log('Loading tasks...');
         this.showLoading(true);
         
         try {
             const response = await fetch(this.apiUrl);
             const tasks = await response.json();
+            console.log('Tasks loaded:', tasks);
             
             this.renderTasks(tasks);
         } catch (error) {
@@ -116,20 +118,30 @@ class TaskManager {
     }
 
     renderTasks(tasks) {
+        console.log('Rendering tasks:', tasks);
         const container = document.getElementById('tasks-container');
         const noTasksMsg = document.getElementById('no-tasks');
         
-        if (!container) return;
-
-        if (tasks.length === 0) {
-            container.innerHTML = '';
-            noTasksMsg.classList.remove('d-none');
+        if (!container) {
+            console.error('tasks-container not found');
             return;
         }
 
-        noTasksMsg.classList.add('d-none');
+        if (tasks.length === 0) {
+            console.log('No tasks to display');
+            container.innerHTML = '';
+            if (noTasksMsg) {
+                noTasksMsg.classList.remove('d-none');
+            }
+            return;
+        }
+
+        if (noTasksMsg) {
+            noTasksMsg.classList.add('d-none');
+        }
         
         container.innerHTML = tasks.map(task => this.createTaskHTML(task)).join('');
+        console.log('Tasks rendered successfully');
         
         // Bind task-specific event listeners
         this.bindTaskEvents();

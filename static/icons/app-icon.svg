@@ -1,0 +1,32 @@
+<!-- Task Manager App Icon SVG -->
+<svg width="192" height="192" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="96" cy="96" r="88" fill="#007bff"/>
+  
+  <!-- Clipboard background -->
+  <rect x="48" y="36" width="96" height="120" rx="8" fill="white"/>
+  <rect x="52" y="40" width="88" height="112" rx="4" fill="#f8f9fa"/>
+  
+  <!-- Clipboard clip -->
+  <rect x="72" y="24" width="48" height="16" rx="8" fill="#6c757d"/>
+  <rect x="76" y="28" width="40" height="8" rx="4" fill="white"/>
+  
+  <!-- Checkmarks and lines -->
+  <!-- First item - checked -->
+  <circle cx="64" cy="64" r="6" fill="#28a745"/>
+  <path d="M59 64 L62 67 L69 60" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <rect x="76" y="61" width="48" height="3" fill="#28a745"/>
+  
+  <!-- Second item - checked -->
+  <circle cx="64" cy="88" r="6" fill="#28a745"/>
+  <path d="M59 88 L62 91 L69 84" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <rect x="76" y="85" width="40" height="3" fill="#28a745"/>
+  
+  <!-- Third item - pending -->
+  <circle cx="64" cy="112" r="6" fill="#dee2e6"/>
+  <rect x="76" y="109" width="44" height="3" fill="#6c757d"/>
+  
+  <!-- Fourth item - pending -->
+  <circle cx="64" cy="136" r="6" fill="#dee2e6"/>
+  <rect x="76" y="133" width="36" height="3" fill="#6c757d"/>
+</svg>

@@ -1,6 +1,6 @@
 {
   "name": "Task Manager - Stay Organized",
-  "short_name": "TaskManager",
+  "short_name": "Tasks",
   "description": "A simple and efficient task management application",
   "start_url": "/",
   "scope": "/",
@@ -9,6 +9,12 @@
   "theme_color": "#007bff",
   "orientation": "portrait-primary",
   "icons": [
+    {
+      "src": "/static/icons/app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
     {
       "src": "/static/icons/icon-192x192.png",
       "sizes": "192x192",
