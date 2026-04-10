@@ -12,8 +12,22 @@ window.addEventListener('beforeinstallprompt', (e) => {
     showInstallButton();
 });
 
+// Check if app is already installed/running in standalone mode
+function isAppInstalled() {
+    return window.matchMedia('(display-mode: standalone)').matches || 
+           window.navigator.standalone === true ||
+           document.referrer.includes('android-app://');
+}
+
 function showInstallButton() {
-    // Create install button if it doesn't exist
+    // Don't show install button if app is already installed
+    if (isAppInstalled()) {
+        console.log('App is already installed, hiding install buttons');
+        hideInstallButtons();
+        return;
+    }
+    
+    // Create floating install button if it doesn't exist
     if (!document.getElementById('install-app')) {
         const installBtn = document.createElement('button');
         installBtn.id = 'install-app';
@@ -35,6 +49,20 @@ function showInstallButton() {
     }
 }
 
+function hideInstallButtons() {
+    // Hide floating install button
+    const floatingBtn = document.getElementById('install-app');
+    if (floatingBtn) {
+        floatingBtn.style.display = 'none';
+    }
+    
+    // Hide manual install button on welcome screen
+    const manualBtn = document.getElementById('manual-install-btn');
+    if (manualBtn) {
+        manualBtn.style.display = 'none';
+    }
+}
+
 function installPWA() {
     if (deferredPrompt) {
         deferredPrompt.prompt();
@@ -52,6 +80,12 @@ function installPWA() {
 
 // Manual install prompt function
 function showInstallPrompt() {
+    // Don't show install prompt if app is already installed
+    if (isAppInstalled()) {
+        alert('✅ App is already installed! You can find it on your home screen or app drawer.');
+        return;
+    }
+    
     if (deferredPrompt) {
         installPWA();
     } else {
@@ -143,6 +177,11 @@ class TaskManager {
     }
 
     init() {
+        // Check if app is installed and hide install buttons if needed
+        if (isAppInstalled()) {
+            hideInstallButtons();
+        }
+        
         // Show greeting message on app load
         this.showGreeting();
         
@@ -626,5 +665,11 @@ class TaskManager {
 // Initialize TaskManager when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 DOM loaded, initializing TaskManager...');
+    
+    // Hide install buttons if app is already installed
+    if (isAppInstalled()) {
+        hideInstallButtons();
+    }
+    
     window.taskManager = new TaskManager();
 });

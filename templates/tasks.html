@@ -452,7 +452,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     
     <!-- Task Manager JS -->
-    <script src="{{ url_for('static', filename='js/app.js') }}?v=20260411-pwa"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}?v=20260411-hideinstall"></script>
     
     <script>
         // Force clear all caches and refresh
@@ -465,8 +465,8 @@
         }
         
         // Force reload if old version detected
-        if (localStorage.getItem('app_version') !== '20260411-pwa') {
-            localStorage.setItem('app_version', '20260411-pwa');
+        if (localStorage.getItem('app_version') !== '20260411-hideinstall') {
+            localStorage.setItem('app_version', '20260411-hideinstall');
             console.log('New version detected, forcing reload...');
             setTimeout(() => window.location.reload(true), 100);
         }
