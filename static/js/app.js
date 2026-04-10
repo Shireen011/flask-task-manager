@@ -1,23 +1,10 @@
 // Task Manager Frontend JavaScript
 
-// PWA Installation
+// PWA Installation (without service worker)
 let deferredPrompt;
 let installButton;
 
-// Service Worker Registration
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-            .then((registration) => {
-                console.log('SW registered: ', registration);
-            })
-            .catch((registrationError) => {
-                console.log('SW registration failed: ', registrationError);
-            });
-    });
-}
-
-// PWA Install Prompt
+// PWA Install Prompt (simplified without service worker)
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
@@ -371,14 +358,14 @@ class TaskManager {
     }
 
     showSuccess(message) {
-        this.showAlert(message, 'success');
+        this.showAlert(message, 'success', 2000); // 2 seconds for success
     }
 
     showError(message) {
-        this.showAlert(message, 'danger');
+        this.showAlert(message, 'danger', 4000); // 4 seconds for errors
     }
 
-    showAlert(message, type) {
+    showAlert(message, type, duration = 3000) {
         // Remove existing alerts
         document.querySelectorAll('.alert').forEach(alert => alert.remove());
         
@@ -396,10 +383,21 @@ class TaskManager {
             main.insertBefore(alertDiv, main.firstChild);
         }
         
-        // Auto-remove after 5 seconds
+        // Auto-remove after specified duration with fade-out
         setTimeout(() => {
-            alertDiv.remove();
-        }, 5000);
+            if (alertDiv.parentNode) {
+                // Add fade-out animation
+                alertDiv.classList.remove('show');
+                alertDiv.classList.add('fade');
+                
+                // Remove from DOM after animation completes
+                setTimeout(() => {
+                    if (alertDiv.parentNode) {
+                        alertDiv.remove();
+                    }
+                }, 150); // Bootstrap fade transition duration
+            }
+        }, duration);
     }
 
     escapeHtml(text) {
