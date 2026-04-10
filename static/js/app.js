@@ -55,9 +55,18 @@ function installPWA() {
 
 class TaskManager {
     constructor() {
+        // Prevent multiple instances
+        if (window.taskManagerInstance) {
+            console.warn('TaskManager already exists, returning existing instance');
+            return window.taskManagerInstance;
+        }
+        
         this.apiUrl = '/api/tasks';
         this.isSubmitting = false; // Prevent double submissions
         this.init();
+        
+        // Store instance reference
+        window.taskManagerInstance = this;
     }
 
     init() {
@@ -400,7 +409,5 @@ class TaskManager {
     }
 }
 
-// Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    window.taskManager = new TaskManager();
-});
+// NOTE: TaskManager initialization is now handled in base.html template
+// to prevent duplicate initialization

@@ -64,9 +64,15 @@
         // Clear localStorage
         localStorage.clear();
         
-        // Initialize Task Manager when page loads
+        // Initialize Task Manager when page loads (prevent duplicate initialization)
         document.addEventListener('DOMContentLoaded', function() {
-            window.taskManager = new TaskManager();
+            // Only initialize if not already initialized
+            if (!window.taskManager) {
+                console.log('Initializing TaskManager...');
+                window.taskManager = new TaskManager();
+            } else {
+                console.log('TaskManager already initialized');
+            }
         });
     </script>
 </body>
